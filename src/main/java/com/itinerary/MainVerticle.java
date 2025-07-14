@@ -100,9 +100,12 @@ public class MainVerticle extends AbstractVerticle {
         // Reorder activities within a day
         router.put("/api/trips/:tripId/days/:dayNumber/reorder").handler(tripHandler::reorderActivities);
 
+        int port = Integer.parseInt(System.getenv().getOrDefault("PORT", "8888"));
+
+
         vertx.createHttpServer()
                 .requestHandler(router)
-                .listen(8888)
+                .listen(port, "0.0.0.0")
                 .onSuccess(server -> {
                     System.out.println("HTTP server started on port " + server.actualPort());
                     startPromise.complete();
