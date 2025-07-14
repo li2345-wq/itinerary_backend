@@ -24,9 +24,13 @@ import io.github.cdimascio.dotenv.Dotenv;
 public class MainVerticle extends AbstractVerticle {
 
     // adding this to make frontend *easier
-    Dotenv dotenv = Dotenv.load();
+   /*  Dotenv dotenv = Dotenv.load();
     String mongoUri = dotenv.get("MONGO_URI");
-    String jwtSecret = dotenv.get("JWT_SECRET_KEY");
+    String jwtSecret = dotenv.get("JWT_SECRET_KEY");*/
+    // the frontend get me into insane ....
+    String mongoUri = System.getenv("MONGO_URI");
+    String jwtSecret = System.getenv("JWT_SECRET_KEY");
+
     @Override
     public void start(Promise<Void> startPromise) {
         JsonObject mongoConfig = new JsonObject()
