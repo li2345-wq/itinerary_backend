@@ -1,26 +1,29 @@
-# Use a lightweight JDK base image
-FROM eclipse-temurin:17-jdk-alpine
+# ===== Build Stage =====
+FROM maven:3.9.6-eclipse-temurin-21 as build
 
-# Set the working directory
 WORKDIR /app
 
-# Copy Maven build files
+# Preload dependencies
 COPY pom.xml .
+RUN mvn dependency:go-offline
 
-# Download dependencies (cached)
-RUN apk add --no-cache maven && mvn dependency:go-offline
-
-# Copy the entire project
+# Copy source and build
 COPY . .
-
-# Build the application
 RUN mvn clean package -DskipTests
 
-# Expose port used by Vert.x
+# ===== Runtime Stage =====
+FROM eclipse-temurin:21-jdk-jammy
+
+WORKDIR /app
+
+# Copy compiled app from build stage
+COPY --from=build /app/target /app/target
+
+# Set PORT for Render
+ENV PORT=8888
+
+# Expose port
 EXPOSE 8888
 
-# Set environment variables directory for secrets (optional)
-ENV DOTENV_PATH=.env
-
-# Start the application
+# Launch Vert.x app
 CMD ["java", "-cp", "target/classes:target/dependency/*", "com.itinerary.Main"]
