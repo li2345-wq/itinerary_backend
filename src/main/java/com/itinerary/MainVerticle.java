@@ -17,12 +17,16 @@ import io.vertx.ext.web.handler.StaticHandler;
 
 import java.util.HashSet;
 import java.util.Set;
+import io.github.cdimascio.dotenv.Dotenv;
+
+
 
 public class MainVerticle extends AbstractVerticle {
 
     // adding this to make frontend *easier
-    String mongoUri = System.getenv("MONGO_URI");        // Example: mongodb+srv://user:pass@host/db
-    String jwtSecret = System.getenv("JWT_SECRET_KEY");
+    Dotenv dotenv = Dotenv.load();
+    String mongoUri = dotenv.get("MONGO_URI");
+    String jwtSecret = dotenv.get("JWT_SECRET_KEY");
     @Override
     public void start(Promise<Void> startPromise) {
         JsonObject mongoConfig = new JsonObject()
