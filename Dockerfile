@@ -22,7 +22,6 @@ COPY --from=build /app/target /app/target
 # Set PORT for Render
 ENV PORT=8888
 
-
 # Expose port
 EXPOSE 8888
 
