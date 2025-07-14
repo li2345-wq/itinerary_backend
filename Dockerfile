@@ -9,6 +9,7 @@ RUN mvn dependency:go-offline
 
 # Copy source and build
 COPY . .
+COPY .env .env
 RUN mvn clean package -DskipTests
 
 # ===== Runtime Stage =====
