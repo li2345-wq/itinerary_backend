@@ -20,10 +20,15 @@ import java.util.Set;
 
 public class MainVerticle extends AbstractVerticle {
 
+    // adding this to make frontend *easier
+    String mongoUri = System.getenv("MONGO_URI");        // Example: mongodb+srv://user:pass@host/db
+    String jwtSecret = System.getenv("JWT_SECRET_KEY");
     @Override
     public void start(Promise<Void> startPromise) {
         JsonObject mongoConfig = new JsonObject()
-                .put("connection_string", "mongodb://localhost:27017")
+                .put("connection_string",mongoUri)
+                .put("ssl", true)
+                .put("trustAll", true)
                 .put("db_name", "itinerary_app");
 
         MongoClient mongoClient = MongoClient.createShared(vertx, mongoConfig);
@@ -32,7 +37,7 @@ public class MainVerticle extends AbstractVerticle {
         JWTAuthOptions jwtOptions = new JWTAuthOptions()
                 .addJwk(new JsonObject()
                         .put("kty", "oct")
-                        .put("k", "c3VwZXJzZWNyZXRrZXk=")); // Base64 encoded "supersecretkey"
+                        .put("k", jwtSecret));
 
         JWTAuth jwtAuth = JWTAuth.create(vertx, jwtOptions);
 
